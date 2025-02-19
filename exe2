@@ -1,0 +1,43 @@
+import cv2
+import numpy as np
+from qreader import QReader
+from pyzbar.pyzbar import decode
+
+
+def process_frame(frame):
+    qr_codes = decode(frame)
+    for qr in qr_codes:
+        data = qr.data.decode('utf-8')
+        print(f"QR Code detected: {data}")
+        pts = qr.polygon
+        if len(pts) == 4:
+            pts = [(p.x, p.y) for p in pts]
+            cv2.polylines(frame, [np.array(pts, np.int32)], isClosed=True, color=(0, 255, 0), thickness=2)
+    return frame
+
+def capture_video():
+
+    cam = cv2.VideoCapture(0)
+
+    if not cam.isOpened():
+        print("Could not open camera.")
+        return
+
+    while True:
+        ret, frame = cam.read()
+
+        if not ret:
+            print("Could not read frame")
+            break
+
+        frame = process_frame(frame)
+        cv2.imshow('QR Code Scanner', frame)
+
+        if cv2.waitKey(1) == ord('q'):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    capture_video()
