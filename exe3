@@ -1,0 +1,10 @@
+import requests
+
+auth_url = "https://mad-shop.onrender.com/api/auth/local"
+
+test_url = "https://mad-shop.onrender.com/api/pickups/w48d5amulc3ztejpbsnip6fo?populate=items"
+
+credentials = {
+    "identifier": "vm1@shipping.com",
+    "password": "123456"
+}
